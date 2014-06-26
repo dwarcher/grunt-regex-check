@@ -1,7 +1,7 @@
 'use strict';
 var grunt = require('grunt');
 
-var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, negative) {
+var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, negative, label) {
     var log = gruntLog;
     var file = gruntFile;
 
@@ -71,7 +71,14 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, ne
                     if(negative)
                     {
                         var filesMessages = matchingFiles.map(function (matchingFile) {
-                          return matchingFile.filepath + " - failed because it didn't match '" + pattern + "'";
+
+                            if (label === undefined)
+                            {
+                                return matchingFile.filepath + " - failed because it didn't match '" + pattern + "'";   
+                            } else {
+                                return matchingFile.filepath + " - failed test: " + label;
+                            }
+                          
                         }).join('\n');
 
                         grunt.fail.warn("The following files contained unwanted patterns:\n\n" + filesMessages +
@@ -79,9 +86,16 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, ne
 
                     } else {
                         var filesMessages = matchingFiles.map(function (matchingFile) {
-                          return matchingFile.filepath + " - failed because it matched '" + pattern + "'";
+
+                            if (label === undefined)
+                            {
+                                return matchingFile.filepath + " - failed because it matched '" + matchingFile.match[0] + "'";
+                            } else {
+                                return matchingFile.filepath + " - failed test: " + label;
+                            }
+                          
                         }).join('\n');
-                        
+
                         grunt.fail.warn("The following files contained unwanted patterns:\n\n" + filesMessages +
                             "\n\nFiles that were excluded:\n" + excludedFiles.join('\n'));
 
