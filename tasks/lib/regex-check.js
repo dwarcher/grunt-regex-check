@@ -1,7 +1,7 @@
 'use strict';
 var grunt = require('grunt');
 
-var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile) {
+var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, negative) {
     var log = gruntLog;
     var file = gruntFile;
 
@@ -11,6 +11,10 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile) {
     }
     if (typeof pattern !== 'object') {
         throw "Configuration option 'pattern' should be a javascript regular expression";
+    }
+
+    if (negative === undefined) {
+        negative = false;
     }
 
     var isExcluded = function (filepath) {
@@ -40,6 +44,10 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile) {
                     ranOnce = true;
                     var source = file.read(filepath);
                     var match = source.match(pattern);
+
+                    if(negative)
+                        match = !match;
+
                     return {
                       filepath: filepath,
                       match: match,
