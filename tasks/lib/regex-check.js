@@ -45,16 +45,24 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, ne
                     var source = file.read(filepath);
                     var match = source.match(pattern);
 
-                    if(negative)
-                        match = !match;
-
                     return {
                       filepath: filepath,
                       match: match,
                       isNotExcluded: !isExcluded(filepath, excludedFiles)
                     };
                 }).filter(function (result) {
-                    return result.match !== null && result.isNotExcluded;
+                        if (result.match !== null && result.isNotExcluded)
+                        {
+                            if (negative)
+                            {
+                                return false;
+                            }
+                            else {
+                                return true;
+                            }
+                        } else {
+                            return false;
+                        }
                     });
 
                 if (matchingFiles.length === 0) {
