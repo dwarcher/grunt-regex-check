@@ -81,8 +81,13 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, ne
                           
                         }).join('\n');
 
-                        grunt.fail.warn("The following files contained unwanted patterns:\n\n" + filesMessages +
-                            "\n\nFiles that were excluded:\n" + excludedFiles.join('\n'));
+                        var finalMsg = filesMessages;
+
+                        if(excludedFiles.length > 0) {
+                             finalMsg += "\n\nFiles that were excluded:\n" + excludedFiles.join('\n')
+                        }
+
+                        grunt.fail.warn(finalMsg);
 
                     } else {
                         var filesMessages = matchingFiles.map(function (matchingFile) {
@@ -96,8 +101,13 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, ne
                           
                         }).join('\n');
 
-                        grunt.fail.warn("The following files contained unwanted patterns:\n\n" + filesMessages +
-                            "\n\nFiles that were excluded:\n" + excludedFiles.join('\n'));
+                        var finalMsg = filesMessages;
+
+                        if(excludedFiles.length > 0) {
+                             finalMsg += "\n\nFiles that were excluded:\n" + excludedFiles.join('\n')
+                        }
+
+                        grunt.fail.warn(finalMsg);
 
                     }
                 }
