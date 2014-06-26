@@ -51,33 +51,46 @@ var RegexCheck = function (pattern, listOfExcludedFiles, gruntLog, gruntFile, ne
                       isNotExcluded: !isExcluded(filepath, excludedFiles)
                     };
                 }).filter(function (result) {
-                        if (result.match !== null && result.isNotExcluded)
+                        if(result.isNotExcluded)
                         {
-                            if (negative)
-                            {
-                                return false;
-                            }
-                            else {
-                                return true;
-                            }
+                            if(negative) 
+                                return result.match === null;
+                            else
+                                return result.match !== null;
+
                         } else {
                             return false;
                         }
+ 
                     });
 
                 if (matchingFiles.length === 0) {
                     log.writeln('grunt-regex-check passed');
                 } else {
-                    var filesMessages = matchingFiles.map(function (matchingFile) {
-                      return matchingFile.filepath + " - failed because it matched '" + matchingFile.match[0] + "'";
-                    }).join('\n');
-                    grunt.fail.warn("The following files contained unwanted patterns:\n\n" + filesMessages +
-                        "\n\nFiles that were excluded:\n" + excludedFiles.join('\n'));
+
+                    if(negative)
+                    {
+                        var filesMessages = matchingFiles.map(function (matchingFile) {
+                          return matchingFile.filepath + " - failed because it didn't match '" + pattern + "'";
+                        }).join('\n');
+
+                        grunt.fail.warn("The following files contained unwanted patterns:\n\n" + filesMessages +
+                            "\n\nFiles that were excluded:\n" + excludedFiles.join('\n'));
+
+                    } else {
+                        var filesMessages = matchingFiles.map(function (matchingFile) {
+                          return matchingFile.filepath + " - failed because it matched '" + pattern + "'";
+                        }).join('\n');
+                        
+                        grunt.fail.warn("The following files contained unwanted patterns:\n\n" + filesMessages +
+                            "\n\nFiles that were excluded:\n" + excludedFiles.join('\n'));
+
+                    }
                 }
 
             });
             if(!ranOnce) {
-                log.warn("No files were processed. You may want to check you configuration. Files detected: " + files.join(','));
+                log.warn("No files were processed. You may want to check your configuration. Files detected: " + files.join(','));
             }
         }
     };
